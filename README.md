@@ -1,2 +1,2 @@
 # NEWS-AI
-Made by Divyansh and Jessica 
+Made by Jessica and Divyansh.
