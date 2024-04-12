@@ -1,0 +1,6 @@
+requests
+html2text
+colorama
+rich
+groq
+python-dotenv
