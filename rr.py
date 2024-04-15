@@ -16,7 +16,9 @@ def Search(keywords, timelimit):
         )
         for r in WEBS_news_gen:
             r['date'] = arrow.get(r['date']).humanize()
-            news_list.append(r)
+            if r["image"]:
+                print(r)
+                news_list.append(r)
     return news_list
 
 app = Flask(__name__)
@@ -48,7 +50,7 @@ def main():
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News Article</title>
-    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body,
         html {
@@ -57,26 +59,28 @@ def main():
             padding: 0;
             display: flex;
             flex-direction: column;
+            background-color: #1f2937;
+            color: #f9fafb;
         }
-        
+
         .container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             padding: 20px;
         }
-        
+
         .footer {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: white;
+            background-color: #1f2937;
             padding: 8px;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
-        
+
         .btn {
             margin: 0 10px;
         }
@@ -85,11 +89,15 @@ def main():
 
 <body>
     <div class="container mx-auto">
+        <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <input type="text" id="keywordInput" class="px-4 py-2 border border-gray-500 rounded bg-gray-700 text-white" placeholder="Enter keyword">
+            <button id="searchBtn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Search</button>
+        </div>
         <div class="flex flex-col md:flex-row gap-4">
-            <img id="articleImage" src="https://m.media-amazon.com/images/I/51mWHXY8hyL._AC_UF1000,1000_QL80_.jpg" alt="PlayStation 5" class="md:w-1/7 rounded" style="width: 100%;">
+            <img id="articleImage" src="https://th.bing.com/th/id/OIG1.4sOC2_8QeObxXmAjG633?w=1024&h=1024&rs=1&pid=ImgDetMain" alt="PlayStation 5" class="md:w-1/7 rounded" style="width: 100%;">
             <div>
-                <h1 id="articleTitle" class="text-xl font-bold mb-4">Blinkit customer demands to play FIFA with delivery partner, here's what CEO Albinder Dhindsa said</h1>
-                <p id="articleBody" class="text-gray-700 mb-4">Technology News: Blinkit CEO announces PS5 Slim delivery in 10 minutes. Unusual request for PS5 play date during delivery. Humorous interaction shared by Zomato.</p>
+                <h1 id="articleTitle" class="text-xl font-bold mb-4"></h1>
+                <p id="articleBody" class="text-gray-400 mb-4"></p>
             </div>
         </div>
     </div>
@@ -120,7 +128,6 @@ def main():
             // Display the first article initially
             displayArticle(currentIndex);
         }
-
 
         // Display the article based on the current index
         function displayArticle(index) {
@@ -156,12 +163,21 @@ def main():
             }
         }
 
+        // Event handler for search button
+        function onSearchClick(event) {
+            event.preventDefault();
+            const keywordInput = document.getElementById('keywordInput');
+            const keyword = keywordInput.value.trim();
+            if (keyword) {
+                fetchData(keyword);
+            }
+        }
+
         // Add event listeners to buttons
         document.getElementById('prevBtn').addEventListener('click', onPrevClick);
         document.getElementById('nextBtn').addEventListener('click', onNextClick);
+        document.getElementById('searchBtn').addEventListener('click', onSearchClick);
 
-        // Initialize the application
-        fetchData();
     </script>
 </body>
 
