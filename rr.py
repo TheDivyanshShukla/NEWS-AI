@@ -62,14 +62,23 @@ def main():
             background-color: #1f2937;
             color: #f9fafb;
         }
-
+        
         .container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             padding: 20px;
+            align-items: center;
         }
-
+        
+        .article-content {
+            text-align: center;
+        }
+        
+        #readMoreBtn {
+            display: inline-block;
+        }
+        
         .footer {
             position: fixed;
             bottom: 0;
@@ -79,10 +88,6 @@ def main():
             padding: 8px;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
-        }
-
-        .btn {
-            margin: 0 10px;
         }
     </style>
 </head>
@@ -95,18 +100,13 @@ def main():
         </div>
         <div class="flex flex-col md:flex-row gap-4">
             <img id="articleImage" src="https://th.bing.com/th/id/OIG1.4sOC2_8QeObxXmAjG633?w=1024&h=1024&rs=1&pid=ImgDetMain" alt="PlayStation 5" class="md:w-1/7 rounded" style="width: 100%;">
-            <div>
+            <div class="article-content">
                 <h1 id="articleTitle" class="text-xl font-bold mb-4"></h1>
                 <p id="articleBody" class="text-gray-400 mb-4"></p>
+                <a id="readMoreBtn" href="#" target="_blank" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Read More</a>
             </div>
         </div>
     </div>
-
-    <footer class="footer">
-        <a id="prevBtn" href="#" class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Prev</a>
-        <a id="readMoreBtn" href="#" target="_blank" class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Read More</a>
-        <a id="nextBtn" href="#" class="btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Next</a>
-    </footer>
 
     <script>
         let currentIndex = 0;
@@ -146,22 +146,34 @@ def main():
             readMoreBtn.href = article.url;
         }
 
-        // Event handlers for buttons
-        function onPrevClick(event) {
-            event.preventDefault();
-            if (currentIndex > 0) {
-                currentIndex--;
-                displayArticle(currentIndex);
+        // Swipe event handlers
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX) {
+                // Swipe left
+                if (currentIndex < articles.length - 1) {
+                    currentIndex++;
+                    displayArticle(currentIndex);
+                }
+            } else if (touchEndX > touchStartX) {
+                // Swipe right
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    displayArticle(currentIndex);
+                }
             }
         }
 
-        function onNextClick(event) {
-            event.preventDefault();
-            if (currentIndex < articles.length - 1) {
-                currentIndex++;
-                displayArticle(currentIndex);
-            }
-        }
+        document.addEventListener('touchstart', (event) => {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (event) => {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        });
 
         // Event handler for search button
         function onSearchClick(event) {
@@ -173,11 +185,8 @@ def main():
             }
         }
 
-        // Add event listeners to buttons
-        document.getElementById('prevBtn').addEventListener('click', onPrevClick);
-        document.getElementById('nextBtn').addEventListener('click', onNextClick);
+        // Add event listener to search button
         document.getElementById('searchBtn').addEventListener('click', onSearchClick);
-
     </script>
 </body>
 
